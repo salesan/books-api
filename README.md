@@ -84,3 +84,18 @@ If you also want to remove the seeded data volume:
 docker-compose down -v
 ```
 
+
+## 📊 Observability
+### Structured Logging
+
+Logs are JSON-formatted.
+
+Includes request metadata, response times, and custom fields.
+
+### Prometheus Metrics
+
+Metrics are exposed at /metrics.
+
+Includes request counts, durations, and response codes.
+
+Can be scraped by Prometheus and visualized with Grafana.
