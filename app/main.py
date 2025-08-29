@@ -7,6 +7,7 @@ from logger import logger
 from middleware import LoggingMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
 from contextlib import asynccontextmanager
+from sqlalchemy.exc import IntegrityError
 
 
 app = FastAPI(title="Books API")
@@ -61,8 +62,14 @@ def add_book(book_create: BookCreate, session: Session = Depends(get_session)) -
     logger.info("Adding new book", extra={"book": book_create})
     book: Book = Book.model_validate(book_create)
     session.add(book)
-    session.commit()
-    session.refresh(book)
+    try:
+        session.commit()
+        session.refresh(book)
+    except IntegrityError as e:
+        session.rollback()
+        if "duplicate key value violates unique constraint" in str(e.orig):
+            raise HTTPException(status_code=400, detail="Book with this primary key already exists")
+        raise HTTPException(status_code=500, detail="Database error")
 
     return book
 
