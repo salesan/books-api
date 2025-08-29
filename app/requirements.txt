@@ -3,6 +3,8 @@ uvicorn
 sqlmodel
 psycopg2
 alembic
+python-json-logger
+prometheus-fastapi-instrumentator
 
 pytest
 httpx
